@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>ColorTool — Color pickers, palettes & tools</title>
   <meta name="description" content="A set of lightweight color tools: picker, wheel, image extractor, charts and a color library. Optimized slots for ads so you can monetize easily." />
+    <meta name="google-adsense-account" content="ca-pub-7095827258508895">
+  
   <style>
     :root{
       --bg:#fbfbfb; --card:#ffffff; --muted:#6b7280; --accent:#ef6a4b; --radius:12px;
@@ -160,7 +162,7 @@
           <h3>Color Wheel</h3>
           <p class="muted">Interactive color wheel — use it to pick hue and explore complementary colors.</p>
           <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:12px">
-            <div style="flex:0 0 260px;max-width:40%;min-width:200px">
+            <div style="flex:0 0 260px;max-width:40%;min-width:160px">
               <canvas id="wheel" width="260" height="260" style="width:100%;height:auto;border-radius:50%;box-shadow:0 8px 20px rgba(0,0,0,0.05);"></canvas>
             </div>
             <div style="min-width:140px;flex:1">
@@ -453,21 +455,33 @@
       }
     });
 
-    // Color wheel (responsive)
+    // Improved Color wheel (responsive + high-DPI aware)
     const wheel = document.getElementById('wheel');
-    const wCtx = wheel.getContext('2d');
-    let wheelSize = 260;
+    let wCtx = wheel.getContext('2d');
     function setWheelSize(){
-      // size based on container / viewport but keep it square
       const parent = wheel.parentElement.getBoundingClientRect();
-      const max = Math.min(parent.width, window.innerWidth*0.45, 340);
-      wheelSize = Math.max(160, Math.floor(max));
-      wheel.width = wheelSize; wheel.height = wheelSize;
+      // choose size relative to parent but not exceeding 340px
+      const cssSize = Math.min(Math.max(160, Math.floor(parent.width)), Math.floor(window.innerWidth * 0.45), 340);
+      const dpr = Math.max(1, window.devicePixelRatio || 1);
+      // set CSS size
+      wheel.style.width = cssSize + 'px';
+      wheel.style.height = cssSize + 'px';
+      // set actual pixels for high-dpi
+      wheel.width = cssSize * dpr;
+      wheel.height = cssSize * dpr;
+      // reset context and scale so drawing coordinates are in CSS pixels
+      wCtx = wheel.getContext('2d');
+      wCtx.setTransform(1,0,0,1,0,0);
+      wCtx.scale(dpr, dpr);
     }
 
     function drawWheel(){
-      const W = wheel.width, H = wheel.height, cx = W/2, cy = H/2, radius = Math.min(W,H)/2 - 3;
-      const img = wCtx.createImageData(W, H);
+      // drawing in CSS pixel coordinates; canvas is already scaled for DPR
+      const cssW = parseInt(wheel.style.width);
+      const W = cssW; const H = W; const cx = W/2, cy = H/2, radius = Math.min(W,H)/2 - 3;
+      // create an offscreen image data using an offscreen canvas to avoid huge memory use
+      const off = document.createElement('canvas'); off.width = W; off.height = H; const octx = off.getContext('2d');
+      const img = octx.createImageData(W, H);
       for(let x=0;x<W;x++){
         for(let y=0;y<H;y++){
           const dx = x - cx, dy = y - cy; const dist = Math.sqrt(dx*dx + dy*dy);
@@ -482,21 +496,42 @@
           }
         }
       }
-      wCtx.putImageData(img,0,0);
+      // putImageData on offscreen then draw scaled to visible canvas (context is scaled already by DPR)
+      octx.putImageData(img,0,0);
+      // clear and draw
+      wCtx.clearRect(0,0,cssW,cssW);
+      wCtx.drawImage(off, 0, 0, cssW, cssW);
     }
 
     function hslToRgb(h,s,l){h/=360;let r,g,b;if(s===0)r=g=b=l;else{const hue2rgb=(p,q,t)=>{if(t<0)t+=1;if(t>1)t-=1;if(t<1/6)return p+(q-p)*6*t;if(t<1/2)return q;if(t<2/3)return p+(q-p)*(2/3-t)*6;return p};const q = l<0.5?l*(1+s):l+s-l*s;const p = 2*l-q;r = hue2rgb(p,q,h+1/3);g = hue2rgb(p,q,h);b = hue2rgb(p,q,h-1/3);}return [Math.round(r*255),Math.round(g*255),Math.round(b*255)];}
 
     function redrawWheel(){ setWheelSize(); drawWheel(); }
-    const debouncedRedraw = debounce(redrawWheel, 140);
+    const debouncedRedraw = debounce(redrawWheel, 120);
     window.addEventListener('resize', debouncedRedraw);
-    // initial draw
-    redrawWheel();
+    // redraw when layout changes (observer)
+    const ro = new ResizeObserver(debouncedRedraw);
+    ro.observe(document.querySelector('.container'));
+    // initial draw after a short delay to ensure layout is ready
+    setTimeout(redrawWheel, 80);
 
-    // wheel interaction
+    // wheel interaction (map click to CSS coordinates then to actual image)
     wheel.addEventListener('click',(e)=>{
-      const rect = wheel.getBoundingClientRect(); const x = Math.round((e.clientX - rect.left)*(wheel.width/rect.width)); const y = Math.round((e.clientY - rect.top)*(wheel.height/rect.height));
-      const p = wCtx.getImageData(x,y,1,1).data; if(p[3]===0) return; const hex = rgbToHex(p[0],p[1],p[2]); setColor(hex); flashMessage(`Picked ${hex}`);
+      const rect = wheel.getBoundingClientRect();
+      const cssX = (e.clientX - rect.left);
+      const cssY = (e.clientY - rect.top);
+      const cssW = parseFloat(wheel.style.width);
+      const scaledX = Math.round(cssX * (wheel.width / cssW));
+      const scaledY = Math.round(cssY * (wheel.height / cssW));
+      try{
+        // read from actual canvas using device pixels
+        const data = wCtx.getImageData(cssX, cssY, 1, 1).data; // wCtx is already scaled so css coords work
+        if(data[3] === 0) return; const hex = rgbToHex(data[0], data[1], data[2]); setColor(hex); flashMessage(`Picked ${hex}`);
+      }catch(err){
+        // fallback: sample from offscreen rendering by re-deriving hsl
+        const cx = cssW/2; const cy = cssW/2; const dx = cssX - cx; const dy = cssY - cy; const dist = Math.sqrt(dx*dx + dy*dy);
+        const radius = Math.min(cssW, cssW)/2 - 3; if(dist>radius) return;
+        let angle = Math.atan2(dy,dx) * 180/Math.PI; if(angle<0) angle += 360; const sat = dist / radius; const rgb = hslToRgb(angle, sat, 0.5); const hex = rgbToHex(rgb[0],rgb[1],rgb[2]); setColor(hex); flashMessage(`Picked ${hex}`);
+      }
     });
 
     // hue slider sync
