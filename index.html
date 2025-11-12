@@ -3,12 +3,53 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ColorTool — Color pickers, palettes & tools</title>
-  <meta name="description" content="A set of lightweight color tools: picker, wheel, image extractor, charts and a color library." />
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7095827258508895"
-     crossorigin="anonymous"></script>
- 
- <style>
+  <title>ColorTool — Free Online Color Picker, HEX to RGB Converter & Palette Generator</title>
+
+  <!-- Primary meta -->
+  <meta name="description" content="ColorTool is a free online color picker and palette generator. Convert HEX to RGB, explore color harmonies, and create UI-ready palettes fast." />
+  <meta name="keywords" content="color picker, hex color code, rgb converter, hsl color, palette generator, color wheel, color picker online, hex to rgb" />
+  <meta name="author" content="Harshit Goswami" />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://yourdomain.com/" />
+  <link rel="icon" href="/favicon.ico" />
+  <meta name="theme-color" content="#ef6a4b" />
+
+  <!-- Open Graph / Social -->
+  <meta property="og:title" content="ColorTool — Free Online Color Picker & Palette Generator" />
+  <meta property="og:description" content="Pick colors, convert HEX to RGB, generate palettes, and learn color theory — all in one web app." />
+  <meta property="og:image" content="https://yourdomain.com/preview.jpg" />
+  <meta property="og:url" content="https://yourdomain.com/" />
+  <meta property="og:type" content="website" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ColorTool — Free Color Picker & HEX Converter" />
+  <meta name="twitter:description" content="A smart color picker and HEX to RGB converter built for designers and developers." />
+  <meta name="twitter:image" content="https://yourdomain.com/preview.jpg" />
+
+  <!-- Google / AdSense verification placeholder (replace with your code) -->
+  <meta name="google-site-verification" content="PUT_YOUR_VERIFICATION_CODE_HERE" />
+
+  <!-- Schema.org structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "ColorTool",
+    "url": "https://yourdomain.com/",
+    "description": "ColorTool helps designers and developers pick, convert, and generate color palettes with ease.",
+    "applicationCategory": "DesignApplication",
+    "operatingSystem": "All",
+    "creator": { "@type": "Person", "name": "Harshit Goswami" }
+  }
+  </script>
+
+  <!-- Preconnect for faster resources (update domains as used) -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Example: preload critical image for social preview -->
+  <link rel="preload" href="/preview.jpg" as="image">
+
+  <style>
     :root{
       --bg:#fbfbfb; --card:#ffffff; --muted:#6b7280; --accent:#ef6a4b; --radius:12px;
       --max-width:1100px; --shadow: 0 8px 28px rgba(15,15,20,0.06);
@@ -127,8 +168,63 @@
     </main>
 
     <section class="card theory">
-      <h2>Color Picker Theory</h2>
-      <p>Learn how colors work with HEX, RGB, HSL, CMYK, and OKLCH formats. Discover color harmonies, shades, and tints to create better designs. Adjust brightness, contrast, and saturation to form professional palettes.</p>
+      <h2>Color Picker</h2>
+
+      <h3>Using the Hex Color Picker</h3>
+      <p>Our color picker lets you select from the millions of available colors, finding hex codes (or RGB, HSL, HSV and OKLCH codes… but more on that later). Simply click and drag your cursor around the color space, or enter a code to see various palette options.</p>
+
+      <h3>How many hex codes are there?</h3>
+      <p>There are exactly 16,777,216 possible hex color codes. Hex codes use a six-digit hexadecimal format (#RRGGBB), with each pair representing values from 00 to FF (0 to 255 in decimal). Multiplying the 256 possible values per color channel (red, green, and blue), we get 256×256×256=16,777,216 (or 256³) unique combinations.</p>
+
+      <h3>Color Shades, Tints and Tones</h3>
+      <p>Color shades, tints, and tones are fundamental concepts for refining and expanding color palettes. By adjusting the darkness, brightness, or intensity of a base color, you can create harmonious color schemes and variants of a base color to use in interface and web design.</p>
+
+      <h4>Color shades</h4>
+      <p>A shade is created by mixing a base color with black, resulting in a darker variation of the original color. Shades add depth and contrast, and are commonly used to provide visual weight or establish hierarchy within designs.</p>
+
+      <h4>Color tints</h4>
+      <p>Tints are created by adding white to a base color, producing lighter, softer versions of the original hue. Tints help establish visual balance, soften the overall aesthetic, and are often used for backgrounds and borders, or paired with a shade.</p>
+
+      <h4>Color tones</h4>
+      <p>A color tone results from adding gray (a combination of black and white) to a base color, which reduces its intensity and saturation. Tones are useful for creating sophisticated, subtle palettes and can introduce a sense of harmony and balance in designs.</p>
+
+      <h3>Color Harmonies</h3>
+      <p>Color harmonies are combinations of colors chosen based on their relationships on the color wheel. These combinations create pleasing and balanced visuals, and can be a great starting point for developing a brand palette. Common types include complementary, analogous, triadic, and tetradic harmonies.</p>
+
+      <h3>Color Spaces</h3>
+      <p>Color spaces describe different methods of organizing, mixing, and representing colors digitally and in print. Each color space has a unique structure and purpose, helping designers select and manage colors accurately across different devices, media, and use cases.</p>
+
+      <h4>Red, green, blue (RGB)</h4>
+      <p>The RGB color space is used primarily for digital screens and displays, mixing red (R), green (G), and blue (B) light in varying intensities to produce a wide range of visible colors. Each of the three channels ranges from 0 to 255, allowing for precise color specification on screens.</p>
+
+      <h4>Hue, Saturation, Lightness (HSL)</h4>
+      <p>HSL represents colors in terms of their hue (color type), saturation (intensity), and lightness (brightness). This intuitive model makes it easier for designers to pick harmonious palettes, adjust colors systematically, and fine-tune aesthetics for web and graphic design.</p>
+
+      <h4>OKLCH (OKLab)</h4>
+      <p>OKLCH, derived from OKLab, is a modern, perceptually uniform color space designed to align closely with human vision. It organizes colors using Lightness (perceived brightness), Chroma (colorfulness), and Hue (color type), making it ideal for precise and visually consistent color choices across devices.</p>
+
+      <h4>Cyan, magenta, yellow, and key (CMYK)</h4>
+      <p>CMYK is a subtractive color space used primarily for color printing. It mixes cyan, magenta, yellow, and key (black) inks to produce colors on physical media. Understanding CMYK is essential when designing for print, as it ensures accurate color reproduction in printed materials.</p>
+
+      <h3>Hex Codes (Hexadecimal Codes)</h3>
+      <p>Hex codes are widely used color identifiers that represent RGB color values using a short, six-digit hexadecimal format (#RRGGBB). Common in web and digital design, hex codes make it simple to consistently specify and communicate exact colors.</p>
+
+      <h4>How do hex codes work?</h4>
+      <p>Hex codes use hexadecimal numbers, a base-16 numbering system, to represent the intensity of red, green, and blue colors. Each color channel is represented by two characters ranging from “00” (no intensity) to “FF” (full intensity), combining to specify one of over 16.7 million unique colors.</p>
+
+      <h4>Converting between hex and rgb</h4>
+      <p>Since hex codes and RGB both represent the same color information, manually converting between the two is straightforward (or just use our RGB to hex converter). Each pair of digits in a hex code translates directly into RGB values ranging from 0 to 255.</p>
+
+      <p>For example, #FF0000 equals RGB (255, 0, 0), which is pure red; #00FF00 equals RGB (0, 255, 0) or pure green, #000000 equals RGB (0,0,0) or pure black, and so on.</p>
+
+      <h3>WCAG and Accessibility Standards</h3>
+      <p>The Web Content Accessibility Guidelines (WCAG) define international standards for making web content accessible to people with disabilities. Adhering to WCAG helps ensure your designs can be understood and navigated by users of all abilities, particularly regarding color contrast and readability.</p>
+
+      <h4>Color accessibility standards</h4>
+      <p>Color accessibility standards focus specifically on the appropriate use of colors and contrasts to accommodate users with visual impairments, such as color blindness or low vision. Tools and guidelines exist to help designers ensure adequate contrast and clearly communicate information without relying solely on color.</p>
+
+      <h3>Dark and Light Mode Theming</h3>
+      <p>Dark and light mode theming involves creating adaptable color schemes that optimize readability and reduce eye strain in different lighting conditions or personal preferences. Using shades and tints, or a color mixer with multiple stops can provide a useful base for dark and light mode color variants.</p>
     </section>
 
     <footer>
