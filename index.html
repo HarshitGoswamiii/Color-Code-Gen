@@ -11,57 +11,68 @@
       --max-width:1100px; --shadow: 0 8px 28px rgba(15,15,20,0.06);
     }
     *{box-sizing:border-box}
-    body{font-family:Inter,system-ui,Arial,sans-serif;margin:0;background:var(--bg);color:#111;line-height:1.45}
-    .container{max-width:var(--max-width);margin:36px auto;padding:20px}
-    header{display:flex;align-items:center;gap:18px}
+    html,body{height:100%}
+    body{font-family:Inter,system-ui,Arial,sans-serif;margin:0;background:var(--bg);color:#111;line-height:1.45;-webkit-font-smoothing:antialiased}
+    .container{max-width:var(--max-width);margin:20px auto;padding:16px}
+    header{display:flex;align-items:center;gap:14px}
     .logo{display:flex;align-items:center;gap:10px}
-    .logo .mark{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,#ffb86b,#ef6a4b);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
-    h1{margin:0;font-size:28px}
-    p.lead{color:var(--muted);margin:6px 0 18px}
-    .grid{display:grid;grid-template-columns:1fr 340px;gap:24px}
+    .logo .mark{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#ffb86b,#ef6a4b);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+    h1{margin:0;font-size:22px}
+    p.lead{color:var(--muted);margin:6px 0 14px}
+
+    /* layout */
+    .grid{display:grid;grid-template-columns:1fr 340px;gap:20px}
 
     /* card */
-    .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+    .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px}
 
     /* color preview area */
-    .picker-wrap{display:flex;gap:18px;align-items:flex-start}
-    .large-swatch{width:100%;height:170px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:20px}
+    .picker-wrap{display:flex;gap:14px;align-items:flex-start}
+    .large-swatch{width:100%;min-height:150px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:18px}
     .controls{width:260px}
     input[type="range"]{width:100%}
     .inputs{display:flex;gap:8px;margin-top:8px}
     .inputs input{flex:1;padding:10px;border-radius:8px;border:1px solid #e6e6e9}
-    .copy-btn{padding:8px 10px;border-radius:8px;border:0;background:#111;color:#fff;cursor:pointer;font-weight:600}
-    button{background:var(--accent);color:#fff;border:0;padding:9px 14px;border-radius:10px;cursor:pointer;font-weight:700}
+    .copy-btn{padding:9px 12px;border-radius:8px;border:0;background:#111;color:#fff;cursor:pointer;font-weight:600}
+    button{background:var(--accent);color:#fff;border:0;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:700}
     .muted{color:var(--muted);font-size:14px}
 
     /* palette */
-    .palette{display:flex;gap:8px;margin-top:12px}
-    .sw{flex:1;height:64px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;cursor:pointer;position:relative}
+    .palette{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+    .sw{flex:1 1 100px;height:64px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;cursor:pointer;position:relative}
     .flash{position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.5);color:#fff;padding:4px 8px;border-radius:6px;font-size:12px;display:none}
 
     /* image picker */
-    .image-tools{display:flex;gap:12px;align-items:center}
-    canvas, video{max-width:100%;border-radius:8px;border:1px solid #eee}
+    .image-tools{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+    canvas, video{width:100%;height:auto;border-radius:8px;border:1px solid #eee}
 
     /* color library */
     .library{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-top:12px}
     .lib-item{height:90px;border-radius:8px;display:flex;align-items:flex-end;padding:8px;color:#fff;font-weight:700}
 
-    footer{margin-top:40px;color:var(--muted);font-size:14px}
+    footer{margin-top:28px;color:var(--muted);font-size:14px}
 
     /* responsive */
+    @media(max-width:1100px){
+      .grid{grid-template-columns:1fr 300px}
+    }
     @media(max-width:900px){
       .grid{grid-template-columns:1fr}
-      .controls{width:auto}
+      .controls{width:100%}
+      .logo .mark{width:40px;height:40px}
+      h1{font-size:20px}
     }
 
     /* ad slot styling (placeholder) */
-    .ad-slot{border:2px dashed #eee;padding:14px;border-radius:10px;text-align:center;color:var(--muted);background:linear-gradient(180deg,#fff, #fbfbfb)}
+    .ad-slot{border:2px dashed #eee;padding:12px;border-radius:10px;text-align:center;color:var(--muted);background:linear-gradient(180deg,#fff, #fbfbfb)}
 
     /* small helpers */
     code{background:#f3f4f6;padding:2px 6px;border-radius:6px;font-size:13px}
     h2,h3{margin:0 0 8px}
     .theory{margin-top:18px}
+
+    /* touch targets */
+    button, .copy-btn { touch-action:manipulation }
   </style>
 </head>
 <body>
@@ -77,18 +88,17 @@
     </header>
 
     <!-- top ad slot -->
-    <div style="margin-top:18px" class="ad-slot card">
+    <div style="margin-top:14px" class="ad-slot card">
       <!-- Replace with your AdSense code or other ad network code -->
       <div style="font-weight:700">Ad slot (responsive)</div>
       <div class="muted">Paste your ad code here</div>
     </div>
 
-    <main style="margin-top:22px" class="grid">
+    <main style="margin-top:18px" class="grid">
       <section>
         <div class="card">
           <h2>Color Picker</h2>
-          <p class="muted">A simple visual picker and HEX / RGB controls. Click a swatch to copy.
-          </p>
+          <p class="muted">A simple visual picker and HEX / RGB controls. Click a swatch to copy.</p>
 
           <div class="picker-wrap" style="margin-top:12px">
             <div style="flex:1">
@@ -110,14 +120,14 @@
                 <button id="copyRgbBtn" class="copy-btn">Copy</button>
               </div>
 
-              <div style="display:flex;gap:8px;margin-top:10px">
+              <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
                 <button id="generate">Generate palette</button>
                 <button id="copyHex" style="background:#333">Copy HEX</button>
               </div>
 
               <div style="margin-top:12px">
                 <label class="muted">Quick actions</label>
-                <div style="display:flex;gap:8px;margin-top:8px">
+                <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
                   <button id="invert" style="background:#6b7280">Invert</button>
                   <button id="random" style="background:#7c5cff">Random</button>
                 </div>
@@ -127,19 +137,19 @@
         </div>
 
         <!-- a narrow vertical ad inside the content flow -->
-        <div style="margin:18px 0" class="ad-slot">Sidebar ad (160×600)</div>
+        <div style="margin:16px 0" class="ad-slot">Sidebar ad (160×600)</div>
 
         <div class="card" style="margin-top:12px">
           <h3>Image Color Extractor</h3>
           <p class="muted">Upload an image, use your camera, or click the canvas to sample colors. Useful for branding and palettes.</p>
-          <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+          <div class="image-tools" style="margin-top:8px">
             <input id="imgFile" type="file" accept="image/*" />
             <button id="clearImg">Clear</button>
             <button id="useCamera">Use Camera</button>
             <button id="takePhoto" style="display:none">Take snapshot</button>
           </div>
           <div style="margin-top:12px;display:flex;gap:12px;flex-direction:column">
-            <video id="video" autoplay playsinline style="display:none;max-width:100%;border-radius:8px;border:1px solid #eee"></video>
+            <video id="video" autoplay playsinline style="display:none"></video>
             <canvas id="canvas" width="800" height="400"></canvas>
           </div>
           <div id="sampleInfo" class="muted" style="margin-top:8px">Click the image to sample or capture a photo.</div>
@@ -150,8 +160,10 @@
           <h3>Color Wheel</h3>
           <p class="muted">Interactive color wheel — use it to pick hue and explore complementary colors.</p>
           <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:12px">
-            <canvas id="wheel" width="260" height="260" style="border-radius:50%;box-shadow:0 8px 20px rgba(0,0,0,0.05);"></canvas>
-            <div style="min-width:120px">
+            <div style="flex:0 0 260px;max-width:40%;min-width:200px">
+              <canvas id="wheel" width="260" height="260" style="width:100%;height:auto;border-radius:50%;box-shadow:0 8px 20px rgba(0,0,0,0.05);"></canvas>
+            </div>
+            <div style="min-width:140px;flex:1">
               <label class="muted">Hue</label>
               <input id="hue" type="range" min="0" max="360" value="14" />
               <div id="huePreview" style="width:72px;height:48px;border-radius:8px;background:#ef6a4b;margin-top:8px"></div>
@@ -259,13 +271,16 @@
       <div style="max-width:var(--max-width);margin:18px auto;padding:0 20px">
         <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px">
           <div>© ColorTool — Made for creators and devs.</div>
-          <div class="muted">Built with Love •</div>
+          <div class="muted">Built with vanilla JS • Ads-ready layout</div>
         </div>
       </div>
     </footer>
   </div>
 
   <script>
+    // Small util: debounce
+    function debounce(fn, wait=120){let t;return (...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),wait);};}
+
     // Basic color utilities
     const colorInput = document.getElementById('colorInput');
     const swatch = document.getElementById('swatch');
@@ -287,15 +302,13 @@
       hexInput.value=hex.toUpperCase();
       const rgb = hexToRgb(hex);
       rgbInput.value='rgb('+rgb.join(',')+')';
-      // visually indicate copied state reset
-      resetCopyButtons();
     }
     setColor(colorInput.value);
 
     colorInput.addEventListener('input',e=>setColor(e.target.value));
     hexInput.addEventListener('change',e=>{let v=e.target.value.trim();if(!v.startsWith('#'))v='#'+v;setColor(v)});
 
-    function flashMessage(msg, duration=1400){
+    function flashMessage(msg, duration=1200){
       const el = document.getElementById('sampleInfo');
       const prev = el.textContent;
       el.textContent = msg;
@@ -308,15 +321,13 @@
         if(btn){
           const original = btn.textContent;
           btn.textContent = 'Copied!';
-          setTimeout(()=>btn.textContent = original,1400);
+          setTimeout(()=>btn.textContent = original,1200);
         }
         flashMessage(`Copied ${text}`);
       }catch(e){
         alert('Copy failed — please allow clipboard permissions or copy manually.');
       }
     }
-
-    function resetCopyButtons(){ if(copyHexBtn) copyHexBtn.textContent = 'Copy'; if(copyRgbBtn) copyRgbBtn.textContent='Copy'; if(copyHex) copyHex.textContent='Copy HEX'; }
 
     generate.addEventListener('click',()=>{
       const base = hexInput.value.replace('#','');
@@ -347,7 +358,7 @@
       return rgbToHex(f(r),f(g),f(b));
     }
 
-    // Image color extractor
+    // Image color extractor (responsive canvas)
     const imgFile = document.getElementById('imgFile');
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
@@ -358,6 +369,13 @@
     const takePhotoBtn = document.getElementById('takePhoto');
     let stream = null;
 
+    function getMaxCanvasSize(){
+      // choose width based on container width but cap at 800x400
+      const parentWidth = Math.min(document.querySelector('.container').clientWidth - 40, 800);
+      const maxW = parentWidth; const maxH = 400;
+      return {maxW, maxH};
+    }
+
     document.getElementById('clearImg').addEventListener('click',()=>{
       if(stream){ stopCamera(); }
       ctx.clearRect(0,0,canvas.width,canvas.height);picked.innerHTML='';sampleInfo.textContent='Click the image to sample';
@@ -366,10 +384,8 @@
     imgFile.addEventListener('change',(e)=>{
       if(stream) stopCamera();
       const f = e.target.files[0]; if(!f) return; const img = new Image(); img.onload = ()=>{
-        // fit to canvas width while preserving aspect
-        const maxW = 800; const maxH = 400;
-        let w = img.width; let h = img.height;
-        const ratio = w / h;
+        const {maxW, maxH} = getMaxCanvasSize();
+        let w = img.width; let h = img.height; const ratio = w / h;
         if(w > maxW){ w = maxW; h = Math.round(w / ratio); }
         if(h > maxH){ h = maxH; w = Math.round(h * ratio); }
         canvas.width = w; canvas.height = h;
@@ -380,13 +396,15 @@
       img.src = URL.createObjectURL(f);
     });
 
-    // Camera support: request permission and show video; allow snapshot
     async function startCamera(){
       try{
         stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
         video.srcObject = stream; video.style.display = 'block'; takePhotoBtn.style.display = 'inline-block';
-        // ensure video plays
         await video.play();
+        const {maxW, maxH} = getMaxCanvasSize();
+        // set canvas to a reasonable size based on video resolution
+        canvas.width = Math.min(video.videoWidth || maxW, maxW);
+        canvas.height = Math.min(video.videoHeight || maxH, maxH);
         sampleInfo.textContent = 'Camera active — take a snapshot or click video to sample.';
       }catch(err){
         alert('Camera not available or permission denied. You can still upload an image file.');
@@ -395,30 +413,25 @@
     function stopCamera(){ if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; video.style.display='none'; takePhotoBtn.style.display='none'; sampleInfo.textContent='Camera stopped.'; }}
 
     useCameraBtn.addEventListener('click',async ()=>{
-      // toggle camera
       if(stream){ stopCamera(); } else { await startCamera(); }
     });
 
     takePhotoBtn.addEventListener('click',()=>{
       if(!stream) return;
-      // draw current video frame to canvas
       const vw = video.videoWidth; const vh = video.videoHeight;
-      const maxW = 800; const maxH = 400;
+      const {maxW, maxH} = getMaxCanvasSize();
       let w = vw; let h = vh; const ratio = vw / vh;
       if(w > maxW){ w = maxW; h = Math.round(w / ratio); }
       if(h > maxH){ h = maxH; w = Math.round(h * ratio); }
       canvas.width = w; canvas.height = h;
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       sampleInfo.textContent = 'Snapshot taken — click to sample colors.';
-      // stop camera after snapshot to save resources
       stopCamera();
     });
 
-    // allow clicking video to sample directly (before snapshot)
     video.addEventListener('click',(e)=>{
       if(!stream) return;
       const rect = video.getBoundingClientRect(); const x = Math.round((e.clientX - rect.left)*(video.videoWidth/rect.width)); const y = Math.round((e.clientY - rect.top)*(video.videoHeight/rect.height));
-      // draw current frame to an offscreen canvas to sample pixel
       const temp = document.createElement('canvas'); temp.width = video.videoWidth; temp.height = video.videoHeight; const tctx = temp.getContext('2d'); tctx.drawImage(video,0,0);
       try{
         const p = tctx.getImageData(x,y,1,1).data; const hex = rgbToHex(p[0],p[1],p[2]); setColor(hex); flashMessage(`Sampled ${hex} from camera`);
@@ -440,11 +453,20 @@
       }
     });
 
-    // Color wheel drawing (bigger wheel)
+    // Color wheel (responsive)
     const wheel = document.getElementById('wheel');
     const wCtx = wheel.getContext('2d');
-    const W = wheel.width, H = wheel.height, cx = W/2, cy = H/2, radius = Math.min(W,H)/2 - 3;
+    let wheelSize = 260;
+    function setWheelSize(){
+      // size based on container / viewport but keep it square
+      const parent = wheel.parentElement.getBoundingClientRect();
+      const max = Math.min(parent.width, window.innerWidth*0.45, 340);
+      wheelSize = Math.max(160, Math.floor(max));
+      wheel.width = wheelSize; wheel.height = wheelSize;
+    }
+
     function drawWheel(){
+      const W = wheel.width, H = wheel.height, cx = W/2, cy = H/2, radius = Math.min(W,H)/2 - 3;
       const img = wCtx.createImageData(W, H);
       for(let x=0;x<W;x++){
         for(let y=0;y<H;y++){
@@ -462,16 +484,22 @@
       }
       wCtx.putImageData(img,0,0);
     }
-    function hslToRgb(h,s,l){h/=360;let r,g,b;if(s===0)r=g=b=l;else{const hue2rgb=(p,q,t)=>{if(t<0)t+=1;if(t>1)t-=1;if(t<1/6)return p+(q-p)*6*t;if(t<1/2)return q;if(t<2/3)return p+(q-p)*(2/3-t)*6;return p};const q = l<0.5?l*(1+s):l+s-l*s;const p = 2*l-q;r = hue2rgb(p,q,h+1/3);g = hue2rgb(p,q,h);b = hue2rgb(p,q,h-1/3);}return [Math.round(r*255),Math.round(g*255),Math.round(b*255)];}
-    drawWheel();
 
-    // wheel interaction: sample pixel where clicked
+    function hslToRgb(h,s,l){h/=360;let r,g,b;if(s===0)r=g=b=l;else{const hue2rgb=(p,q,t)=>{if(t<0)t+=1;if(t>1)t-=1;if(t<1/6)return p+(q-p)*6*t;if(t<1/2)return q;if(t<2/3)return p+(q-p)*(2/3-t)*6;return p};const q = l<0.5?l*(1+s):l+s-l*s;const p = 2*l-q;r = hue2rgb(p,q,h+1/3);g = hue2rgb(p,q,h);b = hue2rgb(p,q,h-1/3);}return [Math.round(r*255),Math.round(g*255),Math.round(b*255)];}
+
+    function redrawWheel(){ setWheelSize(); drawWheel(); }
+    const debouncedRedraw = debounce(redrawWheel, 140);
+    window.addEventListener('resize', debouncedRedraw);
+    // initial draw
+    redrawWheel();
+
+    // wheel interaction
     wheel.addEventListener('click',(e)=>{
       const rect = wheel.getBoundingClientRect(); const x = Math.round((e.clientX - rect.left)*(wheel.width/rect.width)); const y = Math.round((e.clientY - rect.top)*(wheel.height/rect.height));
-      const p = wCtx.getImageData(x,y,1,1).data; if(p[3]===0) return; const hex = rgbToHex(p[0],p[1],p[2]); setColor(hex);
+      const p = wCtx.getImageData(x,y,1,1).data; if(p[3]===0) return; const hex = rgbToHex(p[0],p[1],p[2]); setColor(hex); flashMessage(`Picked ${hex}`);
     });
 
-    // hue slider synced to hue preview
+    // hue slider sync
     const hue = document.getElementById('hue'); const huePreview = document.getElementById('huePreview');
     hue.addEventListener('input',()=>{const h=hue.value;huePreview.style.background = `linear-gradient(90deg,hsl(${h} 90% 60%), hsl(${h} 100% 40%))`;});
     hue.dispatchEvent(new Event('input'));
@@ -487,7 +515,7 @@
     addToLib.addEventListener('click',()=>createLibItem(hexInput.value));
     ['#EF6A4B','#FFB86B','#59C1BD','#7C5CFF','#FF6FA3','#20C997'].forEach(createLibItem);
 
-    // initialize
+    // init palette
     generate.click();
   </script>
 </body>
