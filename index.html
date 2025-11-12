@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ColorTool — Color pickers, palettes & tools</title>
+  <meta name="description" content="A set of lightweight color tools: picker, wheel, image extractor, charts and a color library. Optimized slots for ads so you can monetize easily." />
+  <style>
+    :root{
+      --bg:#fbfbfb; --card:#ffffff; --muted:#6b7280; --accent:#ef6a4b; --radius:12px;
+      --max-width:1100px; --shadow: 0 8px 28px rgba(15,15,20,0.06);
+    }
+    *{box-sizing:border-box}
+    body{font-family:Inter,system-ui,Arial,sans-serif;margin:0;background:var(--bg);color:#111;line-height:1.45}
+    .container{max-width:var(--max-width);margin:36px auto;padding:20px}
+    header{display:flex;align-items:center;gap:18px}
+    .logo{display:flex;align-items:center;gap:10px}
+    .logo .mark{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,#ffb86b,#ef6a4b);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+    h1{margin:0;font-size:28px}
+    p.lead{color:var(--muted);margin:6px 0 18px}
+    .grid{display:grid;grid-template-columns:1fr 340px;gap:24px}
+
+    /* card */
+    .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+
+    /* color preview area */
+    .picker-wrap{display:flex;gap:18px;align-items:flex-start}
+    .large-swatch{width:100%;height:170px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:20px}
+    .controls{width:260px}
+    input[type="range"]{width:100%}
+    .inputs{display:flex;gap:8px;margin-top:8px}
+    .inputs input{flex:1;padding:10px;border-radius:8px;border:1px solid #e6e6e9}
+    .copy-btn{padding:8px 10px;border-radius:8px;border:0;background:#111;color:#fff;cursor:pointer;font-weight:600}
+    button{background:var(--accent);color:#fff;border:0;padding:9px 14px;border-radius:10px;cursor:pointer;font-weight:700}
+    .muted{color:var(--muted);font-size:14px}
+
+    /* palette */
+    .palette{display:flex;gap:8px;margin-top:12px}
+    .sw{flex:1;height:64px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;cursor:pointer;position:relative}
+    .flash{position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.5);color:#fff;padding:4px 8px;border-radius:6px;font-size:12px;display:none}
+
+    /* image picker */
+    .image-tools{display:flex;gap:12px;align-items:center}
+    canvas, video{max-width:100%;border-radius:8px;border:1px solid #eee}
+
+    /* color library */
+    .library{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-top:12px}
+    .lib-item{height:90px;border-radius:8px;display:flex;align-items:flex-end;padding:8px;color:#fff;font-weight:700}
+
+    footer{margin-top:40px;color:var(--muted);font-size:14px}
+
+    /* responsive */
+    @media(max-width:900px){
+      .grid{grid-template-columns:1fr}
+      .controls{width:auto}
+    }
+
+    /* ad slot styling (placeholder) */
+    .ad-slot{border:2px dashed #eee;padding:14px;border-radius:10px;text-align:center;color:var(--muted);background:linear-gradient(180deg,#fff, #fbfbfb)}
+
+    /* small helpers */
+    code{background:#f3f4f6;padding:2px 6px;border-radius:6px;font-size:13px}
+    h2,h3{margin:0 0 8px}
+    .theory{margin-top:18px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <div class="mark">CT</div>
+        <div>
+          <h1>ColorTool</h1>
+          <div class="muted">Pick, extract & build palettes — ad-ready layout</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- top ad slot -->
+    <div style="margin-top:18px" class="ad-slot card">
+      <!-- Replace with your AdSense code or other ad network code -->
+      <div style="font-weight:700">Ad slot (responsive)</div>
+      <div class="muted">Paste your ad code here</div>
+    </div>
+
+    <main style="margin-top:22px" class="grid">
+      <section>
+        <div class="card">
+          <h2>Color Picker</h2>
+          <p class="muted">A simple visual picker and HEX / RGB controls. Click a swatch to copy.
+          </p>
+
+          <div class="picker-wrap" style="margin-top:12px">
+            <div style="flex:1">
+              <div id="swatch" class="large-swatch" style="background:#ef6a4b">#EF6A4B</div>
+
+              <div class="palette" id="palette">
+                <!-- generated palette -->
+              </div>
+            </div>
+
+            <div class="controls">
+              <input id="colorInput" type="color" value="#ef6a4b" style="width:100%;height:56px;border-radius:8px;border:0" />
+              <div class="inputs" style="margin-top:10px">
+                <input id="hex" placeholder="#rrggbb" />
+                <button id="copyHexBtn" class="copy-btn">Copy</button>
+              </div>
+              <div class="inputs" style="margin-top:8px">
+                <input id="rgb" placeholder="rgb(255,99,71)" />
+                <button id="copyRgbBtn" class="copy-btn">Copy</button>
+              </div>
+
+              <div style="display:flex;gap:8px;margin-top:10px">
+                <button id="generate">Generate palette</button>
+                <button id="copyHex" style="background:#333">Copy HEX</button>
+              </div>
+
+              <div style="margin-top:12px">
+                <label class="muted">Quick actions</label>
+                <div style="display:flex;gap:8px;margin-top:8px">
+                  <button id="invert" style="background:#6b7280">Invert</button>
+                  <button id="random" style="background:#7c5cff">Random</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- a narrow vertical ad inside the content flow -->
+        <div style="margin:18px 0" class="ad-slot">Sidebar ad (160×600)</div>
+
+        <div class="card" style="margin-top:12px">
+          <h3>Image Color Extractor</h3>
+          <p class="muted">Upload an image, use your camera, or click the canvas to sample colors. Useful for branding and palettes.</p>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+            <input id="imgFile" type="file" accept="image/*" />
+            <button id="clearImg">Clear</button>
+            <button id="useCamera">Use Camera</button>
+            <button id="takePhoto" style="display:none">Take snapshot</button>
+          </div>
+          <div style="margin-top:12px;display:flex;gap:12px;flex-direction:column">
+            <video id="video" autoplay playsinline style="display:none;max-width:100%;border-radius:8px;border:1px solid #eee"></video>
+            <canvas id="canvas" width="800" height="400"></canvas>
+          </div>
+          <div id="sampleInfo" class="muted" style="margin-top:8px">Click the image to sample or capture a photo.</div>
+          <div id="pickedSwatches" class="palette" style="margin-top:8px"></div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <h3>Color Wheel</h3>
+          <p class="muted">Interactive color wheel — use it to pick hue and explore complementary colors.</p>
+          <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:12px">
+            <canvas id="wheel" width="260" height="260" style="border-radius:50%;box-shadow:0 8px 20px rgba(0,0,0,0.05);"></canvas>
+            <div style="min-width:120px">
+              <label class="muted">Hue</label>
+              <input id="hue" type="range" min="0" max="360" value="14" />
+              <div id="huePreview" style="width:72px;height:48px;border-radius:8px;background:#ef6a4b;margin-top:8px"></div>
+              <div style="margin-top:10px"><button id="comp">Complementary</button></div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <aside>
+        <div class="card">
+          <h3>Monetization</h3>
+          <p class="muted">Designed with ad placements in mind — header, sidebar, in-content and footer slots.</p>
+          <div style="margin-top:12px">
+            <div class="ad-slot" style="margin-bottom:12px">Mobile banner / responsive ad</div>
+            <div class="ad-slot" style="margin-bottom:12px">Square ad (300×250)</div>
+            <div class="ad-slot" style="margin-bottom:12px">Native / In-feed ad</div>
+          </div>
+          <details style="margin-top:10px">
+            <summary>Quick setup</summary>
+            <ol style="padding-left:18px">
+              <li>Sign up for Google AdSense (or other network).</li>
+              <li>Paste the provided script into the <code>&lt;head&gt;</code> and ad unit snippets where ad-slot placeholders are.</li>
+              <li>Test on mobile & desktop, and follow network policies.</li>
+            </ol>
+          </details>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <h3>Color Library</h3>
+          <div class="library" id="library">
+            <!-- generated library -->
+          </div>
+          <button id="addToLib" style="margin-top:10px">Save current color</button>
+        </div>
+
+        <!-- footer ad -->
+        <div style="margin-top:14px" class="ad-slot">Footer ad (responsive)</div>
+      </aside>
+    </main>
+
+    <!-- Theory / documentation section -->
+    <section class="card theory">
+      <h2>Color Picker</h2>
+
+      <h3>Using the Hex Color Picker</h3>
+      <p>Our color picker lets you select from the millions of available colors, finding hex codes (or RGB, HSL, HSV and OKLCH codes… but more on that later). Simply click and drag your cursor around the color space, or enter a code to see various palette options.</p>
+
+      <h3>How many hex codes are there?</h3>
+      <p>There are exactly 16,777,216 possible hex color codes. Hex codes use a six-digit hexadecimal format (#RRGGBB), with each pair representing values from 00 to FF (0 to 255 in decimal). Multiplying the 256 possible values per color channel (red, green, and blue), we get 256×256×256=16,777,216 (or 256³) unique combinations.</p>
+
+      <h3>Color Shades, Tints and Tones</h3>
+      <p>Color shades, tints, and tones are fundamental concepts for refining and expanding color palettes. By adjusting the darkness, brightness, or intensity of a base color, you can create harmonious color schemes and variants of a base color to use in interface and web design.</p>
+
+      <h4>Color shades</h4>
+      <p>A shade is created by mixing a base color with black, resulting in a darker variation of the original color. Shades add depth and contrast, and are commonly used to provide visual weight or establish hierarchy within designs.</p>
+
+      <h4>Color tints</h4>
+      <p>Tints are created by adding white to a base color, producing lighter, softer versions of the original hue. Tints help establish visual balance, soften the overall aesthetic, and are often used for backgrounds and borders, or paired with a shade.</p>
+
+      <h4>Color tones</h4>
+      <p>A color tone results from adding gray (a combination of black and white) to a base color, which reduces its intensity and saturation. Tones are useful for creating sophisticated, subtle palettes and can introduce a sense of harmony and balance in designs.</p>
+
+      <h3>Color Harmonies</h3>
+      <p>Color harmonies are combinations of colors chosen based on their relationships on the color wheel. These combinations create pleasing and balanced visuals, and can be a great starting point for developing a brand palette. Common types include complementary, analogous, triadic, and tetradic harmonies.</p>
+
+      <h3>Color Spaces</h3>
+      <p>Color spaces describe different methods of organizing, mixing, and representing colors digitally and in print. Each color space has a unique structure and purpose, helping designers select and manage colors accurately across different devices, media, and use cases.</p>
+
+      <h4>Red, green, blue (RGB)</h4>
+      <p>The RGB color space is used primarily for digital screens and displays, mixing red (R), green (G), and blue (B) light in varying intensities to produce a wide range of visible colors. Each of the three channels ranges from 0 to 255, allowing for precise color specification on screens.</p>
+
+      <h4>Hue, Saturation, Lightness (HSL)</h4>
+      <p>HSL represents colors in terms of their hue (color type), saturation (intensity), and lightness (brightness). This intuitive model makes it easier for designers to pick harmonious palettes, adjust colors systematically, and fine-tune aesthetics for web and graphic design.</p>
+
+      <h4>OKLCH (OKLab)</h4>
+      <p>OKLCH, derived from OKLab, is a modern, perceptually uniform color space designed to align closely with human vision. It organizes colors using Lightness (perceived brightness), Chroma (colorfulness), and Hue (color type), making it ideal for precise and visually consistent color choices across devices.</p>
+
+      <h4>Cyan, magenta, yellow, and key (CMYK)</h4>
+      <p>CMYK is a subtractive color space used primarily for color printing. It mixes cyan, magenta, yellow, and key (black) inks to produce colors on physical media. Understanding CMYK is essential when designing for print, as it ensures accurate color reproduction in printed materials.</p>
+
+      <h3>Hex Codes (Hexadecimal Codes)</h3>
+      <p>Hex codes are widely used color identifiers that represent RGB color values using a short, six-digit hexadecimal format (#RRGGBB). Common in web and digital design, hex codes make it simple to consistently specify and communicate exact colors.</p>
+
+      <h4>How do hex codes work?</h4>
+      <p>Hex codes use hexadecimal numbers, a base-16 numbering system, to represent the intensity of red, green, and blue colors. Each color channel is represented by two characters ranging from “00” (no intensity) to “FF” (full intensity), combining to specify one of over 16.7 million unique colors.</p>
+
+      <h4>Converting between hex and rgb</h4>
+      <p>Since hex codes and RGB both represent the same color information, manually converting between the two is straightforward (or just use our RGB to hex converter). Each pair of digits in a hex code translates directly into RGB values ranging from 0 to 255.</p>
+
+      <p>For example, #FF0000 equals RGB (255, 0, 0), which is pure red; #00FF00 equals RGB (0, 255, 0) or pure green, #000000 equals RGB (0,0,0) or pure black, and so on.</p>
+
+      <h3>WCAG and Accessibility Standards</h3>
+      <p>The Web Content Accessibility Guidelines (WCAG) define international standards for making web content accessible to people with disabilities. Adhering to WCAG helps ensure your designs can be understood and navigated by users of all abilities, particularly regarding color contrast and readability.</p>
+
+      <h4>Color accessibility standards</h4>
+      <p>Color accessibility standards focus specifically on the appropriate use of colors and contrasts to accommodate users with visual impairments, such as color blindness or low vision. Tools and guidelines exist to help designers ensure adequate contrast and clearly communicate information without relying solely on color.</p>
+
+      <h3>Dark and Light Mode Theming</h3>
+      <p>Dark and light mode theming involves creating adaptable color schemes that optimize readability and reduce eye strain in different lighting conditions or personal preferences. Using shades and tints, or a color mixer with multiple stops can provide a useful base for dark and light mode color variants.</p>
+    </section>
+
+    <footer>
+      <div style="max-width:var(--max-width);margin:18px auto;padding:0 20px">
+        <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px">
+          <div>© ColorTool — Made for creators and devs.</div>
+          <div class="muted">Built with Love •</div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Basic color utilities
+    const colorInput = document.getElementById('colorInput');
+    const swatch = document.getElementById('swatch');
+    const hexInput = document.getElementById('hex');
+    const rgbInput = document.getElementById('rgb');
+    const palette = document.getElementById('palette');
+    const generate = document.getElementById('generate');
+    const copyHex = document.getElementById('copyHex');
+    const invertBtn = document.getElementById('invert');
+    const randomBtn = document.getElementById('random');
+    const copyHexBtn = document.getElementById('copyHexBtn');
+    const copyRgbBtn = document.getElementById('copyRgbBtn');
+
+    function rgbToHex(r,g,b){return '#'+[r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('').toUpperCase();}
+    function hexToRgb(hex){hex=hex.replace('#','');if(hex.length===3)hex=hex.split('').map(c=>c+c).join('');const n=parseInt(hex,16);return [n>>16&255,n>>8&255,n&255];}
+
+    function setColor(hex){
+      swatch.style.background=hex;swatch.textContent=hex.toUpperCase();
+      hexInput.value=hex.toUpperCase();
+      const rgb = hexToRgb(hex);
+      rgbInput.value='rgb('+rgb.join(',')+')';
+      // visually indicate copied state reset
+      resetCopyButtons();
+    }
+    setColor(colorInput.value);
+
+    colorInput.addEventListener('input',e=>setColor(e.target.value));
+    hexInput.addEventListener('change',e=>{let v=e.target.value.trim();if(!v.startsWith('#'))v='#'+v;setColor(v)});
+
+    function flashMessage(msg, duration=1400){
+      const el = document.getElementById('sampleInfo');
+      const prev = el.textContent;
+      el.textContent = msg;
+      setTimeout(()=>{el.textContent = prev;}, duration);
+    }
+
+    async function copyWithFeedback(text, btn){
+      try{
+        await navigator.clipboard.writeText(text);
+        if(btn){
+          const original = btn.textContent;
+          btn.textContent = 'Copied!';
+          setTimeout(()=>btn.textContent = original,1400);
+        }
+        flashMessage(`Copied ${text}`);
+      }catch(e){
+        alert('Copy failed — please allow clipboard permissions or copy manually.');
+      }
+    }
+
+    function resetCopyButtons(){ if(copyHexBtn) copyHexBtn.textContent = 'Copy'; if(copyRgbBtn) copyRgbBtn.textContent='Copy'; if(copyHex) copyHex.textContent='Copy HEX'; }
+
+    generate.addEventListener('click',()=>{
+      const base = hexInput.value.replace('#','');
+      const rgb = hexToRgb('#'+base);
+      // generate tints (lighter) and shades (darker)
+      const colors = [];
+      for(let i=0;i<5;i++){
+        const amt = (i-2)*0.18; // negative -> darker, positive -> lighter
+        colors.push(shade(rgb,amt));
+      }
+      palette.innerHTML='';
+      colors.forEach(c=>{
+        const d=document.createElement('div');d.className='sw';d.style.background=c;d.textContent=c;
+        const flash = document.createElement('div'); flash.className='flash'; flash.textContent='Copied'; d.appendChild(flash);
+        d.addEventListener('click',()=>{ copyWithFeedback(c, null); flash.style.display='block'; setTimeout(()=>flash.style.display='none',1200); });
+        palette.appendChild(d);
+      });
+    });
+
+    copyHexBtn.addEventListener('click',()=>copyWithFeedback(hexInput.value, copyHexBtn));
+    copyRgbBtn.addEventListener('click',()=>copyWithFeedback(rgbInput.value, copyRgbBtn));
+    copyHex.addEventListener('click',()=>copyWithFeedback(hexInput.value, copyHex));
+    invertBtn.addEventListener('click',()=>{const [r,g,b]=hexToRgb(hexInput.value);setColor(rgbToHex(255-r,255-g,255-b));});
+    randomBtn.addEventListener('click',()=>{const r=Math.floor(Math.random()*256),g=Math.floor(Math.random()*256),b=Math.floor(Math.random()*256);setColor(rgbToHex(r,g,b));});
+
+    function shade(rgb,amt){ // amt positive -> lighter, negative -> darker
+      const [r,g,b]=rgb;const f=(x)=>Math.min(255,Math.max(0,Math.round(x + (255 - x)*amt)));
+      return rgbToHex(f(r),f(g),f(b));
+    }
+
+    // Image color extractor
+    const imgFile = document.getElementById('imgFile');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const sampleInfo = document.getElementById('sampleInfo');
+    const picked = document.getElementById('pickedSwatches');
+    const video = document.getElementById('video');
+    const useCameraBtn = document.getElementById('useCamera');
+    const takePhotoBtn = document.getElementById('takePhoto');
+    let stream = null;
+
+    document.getElementById('clearImg').addEventListener('click',()=>{
+      if(stream){ stopCamera(); }
+      ctx.clearRect(0,0,canvas.width,canvas.height);picked.innerHTML='';sampleInfo.textContent='Click the image to sample';
+    });
+
+    imgFile.addEventListener('change',(e)=>{
+      if(stream) stopCamera();
+      const f = e.target.files[0]; if(!f) return; const img = new Image(); img.onload = ()=>{
+        // fit to canvas width while preserving aspect
+        const maxW = 800; const maxH = 400;
+        let w = img.width; let h = img.height;
+        const ratio = w / h;
+        if(w > maxW){ w = maxW; h = Math.round(w / ratio); }
+        if(h > maxH){ h = maxH; w = Math.round(h * ratio); }
+        canvas.width = w; canvas.height = h;
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.drawImage(img,0,0,canvas.width,canvas.height);
+        sampleInfo.textContent = 'Image loaded — click to sample colors.';
+      };
+      img.src = URL.createObjectURL(f);
+    });
+
+    // Camera support: request permission and show video; allow snapshot
+    async function startCamera(){
+      try{
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
+        video.srcObject = stream; video.style.display = 'block'; takePhotoBtn.style.display = 'inline-block';
+        // ensure video plays
+        await video.play();
+        sampleInfo.textContent = 'Camera active — take a snapshot or click video to sample.';
+      }catch(err){
+        alert('Camera not available or permission denied. You can still upload an image file.');
+      }
+    }
+    function stopCamera(){ if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; video.style.display='none'; takePhotoBtn.style.display='none'; sampleInfo.textContent='Camera stopped.'; }}
+
+    useCameraBtn.addEventListener('click',async ()=>{
+      // toggle camera
+      if(stream){ stopCamera(); } else { await startCamera(); }
+    });
+
+    takePhotoBtn.addEventListener('click',()=>{
+      if(!stream) return;
+      // draw current video frame to canvas
+      const vw = video.videoWidth; const vh = video.videoHeight;
+      const maxW = 800; const maxH = 400;
+      let w = vw; let h = vh; const ratio = vw / vh;
+      if(w > maxW){ w = maxW; h = Math.round(w / ratio); }
+      if(h > maxH){ h = maxH; w = Math.round(h * ratio); }
+      canvas.width = w; canvas.height = h;
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      sampleInfo.textContent = 'Snapshot taken — click to sample colors.';
+      // stop camera after snapshot to save resources
+      stopCamera();
+    });
+
+    // allow clicking video to sample directly (before snapshot)
+    video.addEventListener('click',(e)=>{
+      if(!stream) return;
+      const rect = video.getBoundingClientRect(); const x = Math.round((e.clientX - rect.left)*(video.videoWidth/rect.width)); const y = Math.round((e.clientY - rect.top)*(video.videoHeight/rect.height));
+      // draw current frame to an offscreen canvas to sample pixel
+      const temp = document.createElement('canvas'); temp.width = video.videoWidth; temp.height = video.videoHeight; const tctx = temp.getContext('2d'); tctx.drawImage(video,0,0);
+      try{
+        const p = tctx.getImageData(x,y,1,1).data; const hex = rgbToHex(p[0],p[1],p[2]); setColor(hex); flashMessage(`Sampled ${hex} from camera`);
+      }catch(err){ alert('Unable to sample camera frame.'); }
+    });
+
+    canvas.addEventListener('click',(e)=>{
+      const rect = canvas.getBoundingClientRect(); const x = Math.round((e.clientX - rect.left)*(canvas.width/rect.width)); const y = Math.round((e.clientY - rect.top)*(canvas.height/rect.height));
+      try{
+        const p = ctx.getImageData(x,y,1,1).data; const hex = rgbToHex(p[0],p[1],p[2]);
+        const el = document.createElement('div'); el.className='sw'; el.style.background=hex; el.textContent=hex;
+        const flash = document.createElement('div'); flash.className='flash'; flash.textContent='Copied'; el.appendChild(flash);
+        el.addEventListener('click',()=>{ copyWithFeedback(hex, null); flash.style.display='block'; setTimeout(()=>flash.style.display='none',1200); });
+        picked.appendChild(el);
+        setColor(hex);
+        sampleInfo.textContent = `Sampled ${hex} @ (${x},${y})`;
+      }catch(err){
+        alert('Unable to sample color at this position. Make sure an image or snapshot is loaded.');
+      }
+    });
+
+    // Color wheel drawing (bigger wheel)
+    const wheel = document.getElementById('wheel');
+    const wCtx = wheel.getContext('2d');
+    const W = wheel.width, H = wheel.height, cx = W/2, cy = H/2, radius = Math.min(W,H)/2 - 3;
+    function drawWheel(){
+      const img = wCtx.createImageData(W, H);
+      for(let x=0;x<W;x++){
+        for(let y=0;y<H;y++){
+          const dx = x - cx, dy = y - cy; const dist = Math.sqrt(dx*dx + dy*dy);
+          const idx = (y*W + x)*4;
+          if(dist <= radius){
+            let angle = Math.atan2(dy,dx) * 180/Math.PI; if(angle<0) angle += 360;
+            const sat = dist / radius;
+            const rgb = hslToRgb(angle, sat, 0.5);
+            img.data[idx] = rgb[0]; img.data[idx+1] = rgb[1]; img.data[idx+2] = rgb[2]; img.data[idx+3] = 255;
+          } else {
+            img.data[idx+3] = 0;
+          }
+        }
+      }
+      wCtx.putImageData(img,0,0);
+    }
+    function hslToRgb(h,s,l){h/=360;let r,g,b;if(s===0)r=g=b=l;else{const hue2rgb=(p,q,t)=>{if(t<0)t+=1;if(t>1)t-=1;if(t<1/6)return p+(q-p)*6*t;if(t<1/2)return q;if(t<2/3)return p+(q-p)*(2/3-t)*6;return p};const q = l<0.5?l*(1+s):l+s-l*s;const p = 2*l-q;r = hue2rgb(p,q,h+1/3);g = hue2rgb(p,q,h);b = hue2rgb(p,q,h-1/3);}return [Math.round(r*255),Math.round(g*255),Math.round(b*255)];}
+    drawWheel();
+
+    // wheel interaction: sample pixel where clicked
+    wheel.addEventListener('click',(e)=>{
+      const rect = wheel.getBoundingClientRect(); const x = Math.round((e.clientX - rect.left)*(wheel.width/rect.width)); const y = Math.round((e.clientY - rect.top)*(wheel.height/rect.height));
+      const p = wCtx.getImageData(x,y,1,1).data; if(p[3]===0) return; const hex = rgbToHex(p[0],p[1],p[2]); setColor(hex);
+    });
+
+    // hue slider synced to hue preview
+    const hue = document.getElementById('hue'); const huePreview = document.getElementById('huePreview');
+    hue.addEventListener('input',()=>{const h=hue.value;huePreview.style.background = `linear-gradient(90deg,hsl(${h} 90% 60%), hsl(${h} 100% 40%))`;});
+    hue.dispatchEvent(new Event('input'));
+
+    // complementary quick action
+    document.getElementById('comp').addEventListener('click',()=>{
+      const base = hexInput.value; const [r,g,b] = hexToRgb(base); const inv = rgbToHex(255-r,255-g,255-b); palette.innerHTML=''; palette.appendChild(Object.assign(document.createElement('div'),{className:'sw',style:`background:${base}`,textContent:base,onclick:()=>navigator.clipboard.writeText(base)})); palette.appendChild(Object.assign(document.createElement('div'),{className:'sw',style:`background:${inv}`,textContent:inv,onclick:()=>navigator.clipboard.writeText(inv)}));
+    });
+
+    // library
+    const library = document.getElementById('library'); const addToLib = document.getElementById('addToLib');
+    function createLibItem(hex){const it=document.createElement('div');it.className='lib-item';it.style.background=hex;it.textContent=hex;it.addEventListener('click',()=>{ copyWithFeedback(hex, null); });library.appendChild(it)}
+    addToLib.addEventListener('click',()=>createLibItem(hexInput.value));
+    ['#EF6A4B','#FFB86B','#59C1BD','#7C5CFF','#FF6FA3','#20C997'].forEach(createLibItem);
+
+    // initialize
+    generate.click();
+  </script>
+</body>
+</html>
